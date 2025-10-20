@@ -1,0 +1,33 @@
+name: Run scraper daily
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'   # codziennie od poniedziałku do piątku o 6:00 UTC (8:00 czasu PL)
+  workflow_dispatch:         # możliwość ręcznego uruchomienia
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: python scraper.py
+
+      - name: Commit and push results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add mieszkania_dom_*.csv || true
+          git commit -m "Add new data file $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
