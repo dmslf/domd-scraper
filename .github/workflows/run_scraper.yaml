@@ -39,5 +39,6 @@ jobs:
           message: "Add new data file $(date +'%Y-%m-%d')"
           add: "mieszkania_dom_*.csv"
           push: true
-          github_token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
+
 
