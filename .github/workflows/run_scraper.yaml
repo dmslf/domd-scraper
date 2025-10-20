@@ -1,33 +1,38 @@
-name: Run scraper daily
+name: Run Dom Scraper Daily
 
 on:
   schedule:
-    - cron: '0 6 * * 1-5'   # codziennie od poniedziałku do piątku o 6:00 UTC (8:00 czasu PL)
-  workflow_dispatch:         # możliwość ręcznego uruchomienia
+    - cron: '0 6 * * 1-5'   # codziennie od poniedziałku do piątku o 6:00 UTC (~8:00 czasu PL)
+  workflow_dispatch:         # umożliwia ręczne uruchomienie workflow
 
 jobs:
-  run:
+  scrape:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Pobranie repozytorium
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Ustawienie Pythona
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
+      # 3️⃣ Instalacja zależności
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # 4️⃣ Uruchomienie scrappera
       - name: Run scraper
-        run: python scraper.py
+        run: python domd-scraper.py
 
+      # 5️⃣ Commit i push wyników (CSV) do repo
       - name: Commit and push results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add mieszkania_dom_*.csv || true
+          git add mieszkania_dom_*.csv
           git commit -m "Add new data file $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
