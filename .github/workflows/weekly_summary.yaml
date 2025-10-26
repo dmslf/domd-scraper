@@ -25,7 +25,7 @@ jobs:
         run: pip install pandas
 
       - name: Run weekly summary script
-        run: python domd-summary.py
+        run: python domd-weekly-summary.py
 
       - name: Commit and push weekly summary
         run: |
